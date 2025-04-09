@@ -1,21 +1,25 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 
 import { RootState } from "@/utils/store";
-import { addExpense, deleteExpense, updateExpense } from "@/utils/expenseSlice";
+import {
+  addExpense,
+  deleteExpense,
+  getExpense,
+  updateExpense,
+} from "@/utils/expenseSlice";
 import { ExpenseItem } from "@/type";
 
 const defaultForm = {
@@ -32,7 +36,10 @@ export function Tracker() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<ExpenseItem | null>(null);
   const email = useSelector((state: RootState) => state.auth.email);
-  console.log({ email });
+
+  useEffect(() => {
+    dispatch(getExpense(email));
+  }, []);
 
   const { register, handleSubmit, reset } = useForm({
     defaultValues: defaultForm,

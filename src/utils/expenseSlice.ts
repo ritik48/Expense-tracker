@@ -13,6 +13,21 @@ const expenseSlice = createSlice({
   name: "expenses",
   initialState,
   reducers: {
+    getExpense: (state, action) => {
+      const user = action.payload;
+
+      if (state.length !== 0) return state;
+
+      const allItemsString = localStorage.getItem("items");
+      if (!allItemsString) {
+        localStorage.setItem("items", "[]");
+      }
+      const allItems = JSON.parse(
+        localStorage.getItem("items")!
+      ) as ExpenseItem[];
+
+      return allItems.filter((item) => item.user === user);
+    },
     addExpense: (state, action: PayloadAction<ExpenseItem>) => {
       const newItem = { ...action.payload, id: uuidv4() };
       state.push(newItem);
@@ -67,6 +82,6 @@ const expenseSlice = createSlice({
   },
 });
 
-export const { addExpense, updateExpense, deleteExpense } =
+export const { addExpense, updateExpense, deleteExpense, getExpense } =
   expenseSlice.actions;
 export default expenseSlice.reducer;
