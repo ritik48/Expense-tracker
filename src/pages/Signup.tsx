@@ -13,6 +13,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import ClipLoader from "react-spinners/ClipLoader";
+import { signup } from "@/utils/authSlice";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 type FormType = {
   name: string;
@@ -28,8 +32,18 @@ export const SignUpPage = () => {
     formState: { errors, isSubmitting },
   } = useForm<FormType>();
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const onSubmit = async (data: FormType) => {
-    // signup
+    try {
+      dispatch(
+        signup({ name: data.name, email: data.email, password: data.password })
+      );
+      navigate("/dashboard");
+    } catch (error: any) {
+      toast.error(error.message || "Cannot login");
+    }
   };
 
   return (

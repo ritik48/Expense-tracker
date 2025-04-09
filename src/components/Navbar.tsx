@@ -3,12 +3,17 @@ import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/utils/store";
+import { logoOut } from "@/utils/authSlice";
+import toast from "react-hot-toast";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const user = useSelector((state: RootState) => state.auth.name);
 
-  const user = { name: "Ritik", email: "raj769417@gmail.com" };
   const isAuthenticated = !!user;
+  const dispatch = useDispatch();
 
   const navigation = isAuthenticated
     ? [
@@ -18,7 +23,13 @@ export function Navbar() {
       ]
     : [{ name: "Home", href: "/" }];
 
-  const logout = () => {};
+  const logout = () => {
+    try {
+      dispatch(logoOut());
+    } catch (error: any) {
+      toast.error(error.message || "Error logging out");
+    }
+  };
 
   const handleLinkClick = () => {
     setMobileMenuOpen(false);
@@ -61,7 +72,7 @@ export function Navbar() {
         <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center gap-10">
           {isAuthenticated ? (
             <>
-              <div>Welcome, {user.name} 👋</div>
+              <div>Welcome, {user} 👋</div>
               <Button className="cursor-pointer" onClick={logout}>
                 Logout
               </Button>

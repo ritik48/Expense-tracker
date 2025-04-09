@@ -13,6 +13,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useDispatch } from "react-redux";
+import { login } from "@/utils/authSlice";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 type FormType = {
   email: string;
@@ -27,8 +31,16 @@ const LoginPage = () => {
     formState: { errors, isSubmitting },
   } = useForm<FormType>();
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const onSubmit = async (data: FormType) => {
-    // login
+    try {
+      dispatch(login({ email: data.email, password: data.password }));
+      navigate("/dashboard");
+    } catch (error: any) {
+      toast.error(error.message || "Cannot login");
+    }
   };
 
   return (
