@@ -38,6 +38,8 @@ export function Navbar() {
         console.log({ isOnline, isAuthenticated });
         dispatch(updateSyncStatus("syncing"));
 
+        await new Promise((r) => setTimeout(r, 800));
+
         dispatch(startSync());
         dispatch(updateSyncStatus("synced"));
         dispatch(getExpense(email));
