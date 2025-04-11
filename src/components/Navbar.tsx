@@ -66,7 +66,6 @@ export function Navbar() {
   const navigation = isAuthenticated
     ? [
         { name: "Home", href: "/" },
-        { name: "Tracker", href: "/tracker" },
         { name: "Dashboard", href: "/dashboard" },
       ]
     : [{ name: "Home", href: "/" }];
