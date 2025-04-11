@@ -46,6 +46,7 @@ const userSlice = createSlice({
       }
       state.name = name;
       state.expiresAt = expiresAt;
+      state.email = email;
     },
     logoOut(state) {
       logoutUser();
