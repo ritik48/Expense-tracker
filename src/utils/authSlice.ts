@@ -4,7 +4,7 @@ import { User } from "@/type";
 
 const savedAuthState = JSON.parse(localStorage.getItem("auth") || "{}");
 
-const EXPIRES_IN = 20 * 60 * 1000;
+const EXPIRES_IN = 10 * 60 * 1000;
 
 const initialState: User = {
   name: savedAuthState.name || "",
