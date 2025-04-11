@@ -51,7 +51,6 @@ const LoginPage = () => {
             Log In
           </CardTitle>
           <CardDescription className="text-center font-medium">
-            Test Credential: <br></br>(email: raj@gmail.com | password: 123)
           </CardDescription>
         </CardHeader>
         <CardContent>
