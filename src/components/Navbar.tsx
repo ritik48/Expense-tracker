@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Button } from "./ui/button";
@@ -7,13 +7,61 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/utils/store";
 import { logoOut } from "@/utils/authSlice";
 import toast from "react-hot-toast";
+import { Label } from "./ui/label";
+import { Switch } from "./ui/switch";
+import {
+  setConnectionStatus,
+  startSync,
+  updateSyncStatus,
+} from "@/utils/syncSlice";
+import { getExpense } from "@/utils/expenseSlice";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const user = useSelector((state: RootState) => state.auth.name);
+  const expiresAt = useSelector((state: RootState) => state.auth.expiresAt);
 
   const isAuthenticated = !!user;
   const dispatch = useDispatch();
+
+  const isOnline = useSelector((state: RootState) => state.sync.isOnline);
+  const email = useSelector((state: RootState) => state.auth.email);
+
+  const handleToggle = (value: boolean) => {
+    dispatch(setConnectionStatus({ isOnline: value }));
+  };
+
+  // to sync on intial render and when network status changes
+  useEffect(() => {
+    const handleSync = async () => {
+      if (isOnline && isAuthenticated) {
+        console.log({ isOnline, isAuthenticated });
+        dispatch(updateSyncStatus("syncing"));
+
+        await new Promise((r) => setTimeout(r, 2000));
+
+        dispatch(startSync());
+        dispatch(updateSyncStatus("synced"));
+        dispatch(getExpense(email));
+      }
+    };
+    handleSync();
+  }, [isAuthenticated, isOnline]);
+
+  // to expire Session
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const handleSessionExpire = async () => {
+      console.log(expiresAt < Date.now());
+      if (expiresAt < Date.now()) {
+        dispatch(logoOut());
+        clearInterval(interval);
+        toast.error("Session expired");
+      }
+    };
+
+    const interval = setInterval(() => handleSessionExpire(), 1000 * 10);
+  }, [isAuthenticated]);
 
   const navigation = isAuthenticated
     ? [
@@ -68,6 +116,14 @@ export function Navbar() {
               {item.name}
             </Link>
           ))}
+          {isAuthenticated && (
+            <>
+              <Switch checked={isOnline} onCheckedChange={handleToggle} />
+              <Label className={isOnline ? "text-green-600" : "text-red-600"}>
+                {isOnline ? "Online (Simulated)" : "Offline (Simulated)"}
+              </Label>
+            </>
+          )}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center gap-10">
           {isAuthenticated ? (

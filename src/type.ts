@@ -13,3 +13,13 @@ export type ExpenseItem = {
   amount: number;
   date: string;
 };
+
+export type PendingQueueItem =
+  | { type: "add"; item: ExpenseItem }
+  | { type: "update"; item: ExpenseItem }
+  | { type: "delete"; id: string };
+
+export type Sync = {
+  isOnline: boolean;
+  syncStatus: "syncing" | "synced" | "error";
+};

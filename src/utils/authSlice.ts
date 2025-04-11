@@ -20,14 +20,15 @@ const userSlice = createSlice({
       const { email, password } = action.payload;
 
       if (!email || !password) throw new Error("Invalid credential");
-      const data = isCredentialValid(email, password);
+      const expiresAt = Date.now() + EXPIRES_IN;
+      const data = isCredentialValid(email, password, expiresAt);
 
       if (data.error) {
         throw new Error(data.error);
       }
       if (!data.error) {
         state.name = data.name!;
-        state.expiresAt = Date.now() + EXPIRES_IN;
+        state.expiresAt = expiresAt;
         state.email = data.email!;
       }
     },

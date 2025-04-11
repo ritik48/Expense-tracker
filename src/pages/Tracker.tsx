@@ -36,6 +36,7 @@ export function Tracker() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<ExpenseItem | null>(null);
   const email = useSelector((state: RootState) => state.auth.email);
+  const isOnline = useSelector((state: RootState) => state.sync.isOnline);
 
   useEffect(() => {
     dispatch(getExpense(email));
@@ -53,9 +54,11 @@ export function Tracker() {
     };
 
     if (editing) {
-      dispatch(updateExpense({ ...payload, id: editing.id }));
+      dispatch(
+        updateExpense({ item: { ...payload, id: editing.id }, isOnline })
+      );
     } else {
-      dispatch(addExpense(payload));
+      dispatch(addExpense({ item: payload, isOnline }));
     }
 
     reset(defaultForm);
@@ -77,7 +80,7 @@ export function Tracker() {
   };
 
   const handleDelete = (id: string) => {
-    dispatch(deleteExpense(id));
+    dispatch(deleteExpense({ id, isOnline }));
   };
 
   return (
