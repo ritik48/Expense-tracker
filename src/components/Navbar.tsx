@@ -179,6 +179,16 @@ export function Navbar() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
+                {isAuthenticated && (
+                  <>
+                    <Switch checked={isOnline} onCheckedChange={handleToggle} />
+                    <Label
+                      className={isOnline ? "text-green-600" : "text-red-600"}
+                    >
+                      {isOnline ? "Online (Simulated)" : "Offline (Simulated)"}
+                    </Label>
+                  </>
+                )}
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
